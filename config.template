@@ -30,8 +30,8 @@ alert = ${wal.color9}
 border = ${wal.color66}
 
 [bar/laptop]
-modules-left = xworkspaces xwindow
-modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth systray date 
+modules-left = i3 xwindow
+modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth battery systray date 
 
 width = 100%
 height = 24pt
@@ -56,8 +56,8 @@ wm-restack = i3
 [bar/tv]
 monitor = HDMI-1-0
 monitor-strict = false
-modules-left = xworkspaces xwindow
-modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth date 
+modules-left = i3 xwindow
+modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth battery date 
 
 width = 100%
 height = 24pt
@@ -117,7 +117,90 @@ label-empty-padding = 1
 
 [module/xwindow]
 type = internal/xwindow
-label = %title:0:60:...%
+label = %title:0:45:...%
+
+[module/i3]
+type = internal/i3
+
+pin-workspaces = true
+
+show-urgent = true
+
+strip-wsnumbers = false
+
+index-sort = true
+
+enable-click = true
+
+enable-scroll = true
+
+wrapping-scroll = true
+
+reverse-scroll = false
+
+fuzzy-match = true
+; ws-icon-[0-9]+ = <label>;<icon>
+; NOTE: The <label> needs to match the name of the i3 workspace
+; Neither <label> nor <icon> can contain a semicolon (;)
+ws-icon-0 = 1;♚
+ws-icon-1 = 2;♛
+ws-icon-2 = 3;♜
+ws-icon-3 = 4;♝
+ws-icon-4 = 5;♞
+ws-icon-default = ♟
+
+format = <label-state> <label-mode>
+
+label-mode = %mode%
+label-mode-padding = 2
+label-mode-background = ${colors.cpu}
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+;   %output%
+; Default: %icon% %name%
+label-focused = %name%
+label-focused-foreground = ${colors.foreground}
+label-focused-background = ${colors.background-alt}
+label-focused-underline = ${colors.background-alt}
+label-focused-padding = 2
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+;   %output%
+; Default: %icon% %name%
+label-unfocused = %name%
+label-unfocused-padding = 2
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+;   %output%
+; Default: %icon% %name%
+label-visible = %name%
+label-visible-underline = ${colors.disabled}
+label-visible-padding = 2
+
+; Available tokens:
+;   %name%
+;   %icon%
+;   %index%
+;   %output%
+; Default: %icon% %name%
+label-urgent = %name%
+label-urgent-foreground = ${colors.network}
+label-urgent-background = ${colors.alert}
+label-urgent-padding = 4
+
+; Separator in between workspaces
+label-separator = |
+label-separator-padding = 2
+label-separator-foreground = ${colors.alert}
 
 [fs-base]
 type = internal/fs
@@ -175,18 +258,20 @@ type = internal/network
 interval = 5
 format-connected = <label-connected>
 format-disconnected = <label-disconnected>
-label-disconnected = %{F#F0C674}%ifname%%{F#707880} disconnected
 label-connected-foreground = ${colors.network}
+label-disconnected-foreground = ${colors.alert}
 
 [module/wlan]
 inherit = network-base
 interface-type = wireless
 label-connected = 󰖩%{F-} %essid% %local_ip%
+label-disconnected = 󰖪
 
 [module/eth]
 inherit = network-base
 interface-type = wired
 label-connected = 󰈁%{F-} %local_ip%
+label-disconnected = 󰈂
 
 [module/date]
 type = internal/date
@@ -200,6 +285,67 @@ time-alt = 󰥔 %Y %I:%M %p
 
 label = %date% %time%
 label-foreground = ${colors.primary}
+
+[module/battery]
+type = internal/battery
+battery = BAT1
+adapter = ACAD
+
+full-at = 100
+low-at = 5
+poll-interval = 5
+time-format = %H:%M
+
+format-charging = <animation-charging> <label-charging>
+format-discharging = <ramp-capacity> <label-discharging>
+format-full = <ramp-capacity> <label-full>
+format-low = <label-low> <animation-low>
+
+label-charging = %percentage%% %time%
+label-discharging = %percentage%%
+label-full = 󱐌
+label-low =  
+
+ramp-capacity-0 = 󰁺
+ramp-capacity-1 = 󰁻
+ramp-capacity-2 = 󰁼
+ramp-capacity-3 = 󰁽
+ramp-capacity-4 = 󰁾
+ramp-capacity-5 = 󰁿
+ramp-capacity-6 = 󰂀
+ramp-capacity-7 = 󰂁
+ramp-capacity-8 = 󰂂
+ramp-capacity-9 = 󰁹
+
+bar-capacity-width = 10
+
+animation-charging-0 = 󰁺
+animation-charging-1 = 󰁻
+animation-charging-2 = 󰁼
+animation-charging-3 = 󰁽
+animation-charging-4 = 󰁾
+animation-charging-5 = 󰁿
+animation-charging-6 = 󰂀
+animation-charging-7 = 󰂁
+animation-charging-8 = 󰂂
+animation-charging-9 = 󰁹
+animation-charging-framerate = 700
+
+animation-discharging-0 = 󰁹
+animation-discharging-1 = 󰂂
+animation-discharging-2 = 󰂁
+animation-discharging-3 = 󰂀
+animation-discharging-4 = 󰁿
+animation-discharging-5 = 󰁾
+animation-discharging-6 = 󰁽
+animation-discharging-7 = 󰁼
+animation-discharging-8 = 󰁻
+animation-discharging-9 = 󰁺
+animation-discharging-framerate = 500
+
+animation-low-0 = 󰂑
+animation-low-1 = 󰂃
+animation-low-framerate = 200
 
 [settings]
 screenchange-reload = true
