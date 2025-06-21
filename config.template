@@ -123,21 +123,13 @@ label = %title:0:45:...%
 type = internal/i3
 
 pin-workspaces = true
-
 show-urgent = true
-
 strip-wsnumbers = false
-
 index-sort = true
-
 enable-click = true
-
 enable-scroll = true
-
 wrapping-scroll = true
-
 reverse-scroll = false
-
 fuzzy-match = true
 ; ws-icon-[0-9]+ = <label>;<icon>
 ; NOTE: The <label> needs to match the name of the i3 workspace
@@ -152,8 +144,8 @@ ws-icon-default = ♟
 format = <label-state> <label-mode>
 
 label-mode = %mode%
-label-mode-padding = 2
-label-mode-background = ${colors.cpu}
+label-mode-padding = 1
+label-mode-background = ${colors.background-alt}
 
 ; Available tokens:
 ;   %name%
@@ -164,8 +156,8 @@ label-mode-background = ${colors.cpu}
 label-focused = %name%
 label-focused-foreground = ${colors.foreground}
 label-focused-background = ${colors.background-alt}
-label-focused-underline = ${colors.background-alt}
-label-focused-padding = 2
+label-focused-underline = ${colors.network}
+label-focused-padding = 1
 
 ; Available tokens:
 ;   %name%
@@ -174,7 +166,7 @@ label-focused-padding = 2
 ;   %output%
 ; Default: %icon% %name%
 label-unfocused = %name%
-label-unfocused-padding = 2
+label-unfocused-padding = 1
 
 ; Available tokens:
 ;   %name%
@@ -183,8 +175,8 @@ label-unfocused-padding = 2
 ;   %output%
 ; Default: %icon% %name%
 label-visible = %name%
-label-visible-underline = ${colors.disabled}
-label-visible-padding = 2
+label-visible-underline = ${colors.network}
+label-visible-padding = 1
 
 ; Available tokens:
 ;   %name%
@@ -198,8 +190,8 @@ label-urgent-background = ${colors.alert}
 label-urgent-padding = 4
 
 ; Separator in between workspaces
-label-separator = |
-label-separator-padding = 2
+label-separator =
+label-separator-padding = 0
 label-separator-foreground = ${colors.alert}
 
 [fs-base]
