@@ -31,7 +31,7 @@ border = ${wal.color66}
 
 [bar/laptop]
 modules-left = i3 xwindow
-modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth battery systray date 
+modules-right = fs-root fs-usb pulseaudio cpu memory temperature gpu-usage gpu-memory gpu-temp wlan eth battery systray date 
 
 width = 100%
 height = 24pt
@@ -41,7 +41,7 @@ background = ${colors.background}
 foreground = ${colors.foreground}
 line-size = 3pt
 border-size = 2pt
-border-color = ${colors.border}
+border-color = ${colors.background-alt}
 padding-left = 0
 padding-right = 1
 module-margin = 1
@@ -51,13 +51,13 @@ font-0 = monospace;2
 cursor-click = pointer
 cursor-scroll = ns-resize
 enable-ipc = true
-wm-restack = i3
+; wm-restack = i3
 
 [bar/tv]
 monitor = HDMI-1-0
 monitor-strict = false
 modules-left = i3 xwindow
-modules-right = fs-root fs-usb pulseaudio memory cpu wlan eth battery date 
+modules-right = fs-root fs-usb pulseaudio cpu memory temperature gpu-usage gpu-memory gpu-temp wlan eth battery date 
 
 width = 100%
 height = 24pt
@@ -67,7 +67,7 @@ background = ${colors.background}
 foreground = ${colors.foreground}
 line-size = 3pt
 border-size = 2pt
-border-color = ${colors.border}
+border-color = ${colors.background-alt}
 padding-left = 0
 padding-right = 1
 module-margin = 1
@@ -77,9 +77,38 @@ font-0 = monospace;2
 cursor-click = pointer
 cursor-scroll = ns-resize
 enable-ipc = true
-wm-restack = i3
+; wm-restack = i3
 
 ; override-redirect = true
+
+[module/gpu-usage]
+type = custom/script
+exec = nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader | sed 's/ //'
+interval = 5
+format-prefix = " "
+format-prefix-foreground = ${colors.gpu}
+format = <label>
+label = %{F-}%output:0:15:...%
+label-fail = %output:0:15:...%
+
+[module/gpu-memory]
+type = custom/script
+exec = nvidia-smi --query-gpu=utilization.memory --format=csv,noheader | sed 's/ //'
+interval = 5
+format-prefix = " "
+format-prefix-foreground = ${colors.gpu}
+format = <label>
+label = %{F-}%output:0:15:...%
+label-fail = %output:0:15:...%
+
+[module/gpu-temp]
+type = custom/script
+exec = ~/.config/polybar/scripts/gpu_temperature
+interval = 5
+format-foreground = ${colors.gpu}
+format = <label>
+label = %output:0:15:...%
+label-fail = %output:0:15:...%
 
 ; This module is not active by default (to enable it, add it to one of the
 ; modules-* list above).
@@ -203,7 +232,7 @@ inherit = fs-base
 interval = 25
 mount-0 = /
 
-label-mounted = 󰋊%{F-} %free%
+label-mounted = 󰋊%{F-} %percentage_used%%
 label-mounted-foreground = ${colors.disk}
 label-unmounted = 󰋊%{F-} not mounted!
 label-unmounted-foreground = ${colors.disabled}
@@ -213,7 +242,7 @@ inherit = fs-base
 interval = 25
 mount-0 = /run/media/thederpykrafter/KINGSTON
 
-label-mounted = 󰕓 %{F-} %free%
+label-mounted = 󰕓 %{F-} %percentage_used%%
 label-mounted-foreground = ${colors.disk}
 label-unmounted = 󰕓 not mounted!
 label-unmounted-foreground = ${colors.disabled}
@@ -243,7 +272,29 @@ type = internal/cpu
 interval = 2
 format-prefix = "󰻠 "
 format-prefix-foreground = ${colors.cpu}
-label = %percentage:2%%
+label = %percentage%%
+
+[module/temperature]
+type = internal/temperature
+interval = 0.5
+thermal-zone = 0
+zone-type = x86_pkg_temp
+hwmon-path = /sys/devices/virtual/thermal/thermal_zone0/hwmon1/temp1_input
+base-temperature = 20
+warn-temperature = 80
+
+units = true
+format = <ramp> <label>
+format-warn = <ramp> <label-warn>
+label = %temperature-c%
+label-warn = %temperature-c%
+label-warn-foreground = #f00
+
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-foreground = ${colors.cpu}
 
 [network-base]
 type = internal/network
@@ -256,7 +307,7 @@ label-disconnected-foreground = ${colors.alert}
 [module/wlan]
 inherit = network-base
 interface-type = wireless
-label-connected = 󰖩%{F-} %essid% %local_ip%
+label-connected = 󰖩%{F-} %local_ip%
 label-disconnected = 󰖪
 
 [module/eth]
@@ -271,11 +322,11 @@ interval = 1
 
 format = <label>
 date =
-date-alt =  %a, %b %d,
-time = 󰥔 %I:%M %p
-time-alt = 󰥔 %Y %I:%M %p
+date-alt =  %{F-}%a, %b %d
+time = 󰥔 %{F-}%I:%M %p
+time-alt = 
 
-label = %date% %time%
+label = %date%%time%
 label-foreground = ${colors.primary}
 
 [module/battery]
@@ -290,7 +341,10 @@ time-format = %H:%M
 
 format-charging = <animation-charging> <label-charging>
 format-discharging = <ramp-capacity> <label-discharging>
-format-full = <ramp-capacity> <label-full>
+
+format-full = <ramp-capacity>%{F-} <label-full>
+format-full-foreground = ${colors.network}
+
 format-low = <label-low> <animation-low>
 
 label-charging = %percentage%% %time%
